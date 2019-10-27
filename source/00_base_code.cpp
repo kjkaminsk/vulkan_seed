@@ -5,53 +5,61 @@
 #include <stdexcept>
 #include <cstdlib>
 
-const int WIDTH = 800;
-const int HEIGHT = 600;
+typedef struct Context_ {
+    int width;
+    int height;
 
-class HelloTriangleApplication {
-public:
-    void run() {
-        initWindow();
-        initVulkan();
-        mainLoop();
-        cleanup();
-    }
-
-private:
     GLFWwindow* window;
+} Context;
 
-    void initWindow() {
-        glfwInit();
+void initWindow(Context& ctx)
+{
+    glfwInit();
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    ctx.window = glfwCreateWindow(ctx.width, ctx.height, "Vulkan", nullptr, nullptr);
+}
 
-        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+void initVulkan(Context& ctx)
+{
 
-        window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+}
+
+void mainLoop(Context& ctx)
+{
+    while (!glfwWindowShouldClose(ctx.window))
+    {
+        glfwPollEvents();
     }
+}
 
-    void initVulkan() {
+void cleanup(Context& ctx)
+{
+    glfwDestroyWindow(ctx.window);
+    glfwTerminate();
+}
 
+void run(Context& ctx)
+{
+    initWindow(ctx);
+    initVulkan(ctx);
+    mainLoop(ctx);
+    cleanup(ctx);
+}
+
+int main()
+{
+    Context ctx;
+
+    ctx.width = 800;
+    ctx.height = 600;
+
+    try
+    {
+        run(ctx);
     }
-
-    void mainLoop() {
-        while (!glfwWindowShouldClose(window)) {
-            glfwPollEvents();
-        }
-    }
-
-    void cleanup() {
-        glfwDestroyWindow(window);
-
-        glfwTerminate();
-    }
-};
-
-int main() {
-    HelloTriangleApplication app;
-
-    try {
-        app.run();
-    } catch (const std::exception& e) {
+    catch (const std::exception& e)
+    {
         std::cerr << e.what() << std::endl;
         return EXIT_FAILURE;
     }
