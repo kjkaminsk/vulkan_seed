@@ -7,6 +7,7 @@
 
 #include "context.h"
 #include "vulkan_instance.h"
+#include "validation_layers.h"
 
 void initWindow(Context& ctx)
 {
@@ -19,6 +20,7 @@ void initWindow(Context& ctx)
 void initVulkan(Context& ctx)
 {
     createInstance(ctx);
+    setupDebugMessenger(ctx);
 }
 
 void mainLoop(Context& ctx)
@@ -31,6 +33,8 @@ void mainLoop(Context& ctx)
 
 void cleanup(Context& ctx)
 {
+    cleanup_validation_layers(ctx);
+    vkDestroyInstance(ctx.instance, nullptr);
     glfwDestroyWindow(ctx.window);
     glfwTerminate();
 }

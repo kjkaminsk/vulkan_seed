@@ -2,12 +2,35 @@
 #include <GLFW/glfw3.h>
 
 #include <stdexcept>
+#include <vector>
 
 #include "context.h"
 #include "vulkan_instance.h"
+#include "validation_layers.h"
+
+std::vector<const char*> getRequiredExtensions(Context& ctx) {
+    uint32_t glfwExtensionCount = 0;
+    const char** glfwExtensions;
+    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+    std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+
+    if (ctx.enableValidationLayers) {
+        extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+    }
+
+    return extensions;
+}
 
 void createInstance(Context& ctx)
 {
+    //ctx.enableValidationLayers = true;
+    ctx.enableValidationLayers = false;
+
+    if (ctx.enableValidationLayers && !checkValidationLayerSupport()) {
+        throw std::runtime_error("validation layers requested, but not available!");
+    }
+
     VkApplicationInfo appInfo = {};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = "Vulkan Seed";
@@ -20,17 +43,28 @@ void createInstance(Context& ctx)
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo = &appInfo;
 
-    uint32_t glfwExtensionCount = 0;
-    const char** glfwExtensions;
-    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+    auto extensions = getRequiredExtensions(ctx);
+    createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+    createInfo.ppEnabledExtensionNames = extensions.data();
 
-    createInfo.enabledExtensionCount = glfwExtensionCount;
-    createInfo.ppEnabledExtensionNames = glfwExtensions;
+    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
+    if (ctx.enableValidationLayers) {
+        auto validation_layers = get_validation_layers();
+        createInfo.enabledLayerCount = static_cast<uint32_t>(validation_layers.size());
+        createInfo.ppEnabledLayerNames = validation_layers.data();
 
-    createInfo.enabledLayerCount = 0;
+        populateDebugMessengerCreateInfo(debugCreateInfo);
+        createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
+    }
+    else {
+        createInfo.enabledLayerCount = 0;
+
+        createInfo.pNext = nullptr;
+    }
 
     if (vkCreateInstance(&createInfo, nullptr, &ctx.instance) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create instance!");
     }
 }
+
