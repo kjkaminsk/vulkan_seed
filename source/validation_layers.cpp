@@ -22,9 +22,9 @@ void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT
     }
 }
 
-const std::vector<const char*>& get_validation_layers()
+std::vector<const char*> get_validation_layers()
 {
-    static const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
+    std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
     return validationLayers;
 }
 

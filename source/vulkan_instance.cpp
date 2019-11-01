@@ -24,8 +24,8 @@ std::vector<const char*> getRequiredExtensions(Context& ctx) {
 
 void createInstance(Context& ctx)
 {
-    //ctx.enableValidationLayers = true;
-    ctx.enableValidationLayers = false;
+    ctx.enableValidationLayers = true;
+    //ctx.enableValidationLayers = false;
 
     if (ctx.enableValidationLayers && !checkValidationLayerSupport()) {
         throw std::runtime_error("validation layers requested, but not available!");
@@ -48,8 +48,8 @@ void createInstance(Context& ctx)
     createInfo.ppEnabledExtensionNames = extensions.data();
 
     VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
+    auto validation_layers = get_validation_layers();
     if (ctx.enableValidationLayers) {
-        auto validation_layers = get_validation_layers();
         createInfo.enabledLayerCount = static_cast<uint32_t>(validation_layers.size());
         createInfo.ppEnabledLayerNames = validation_layers.data();
 
