@@ -14,5 +14,9 @@ typedef struct Context_
     bool enableValidationLayers;
     VkDebugUtilsMessengerEXT debugMessenger;
 
+    VkPhysicalDevice physicalDevice;
+    VkDevice device;
+    VkQueue queue; // use only one queue for: graphics, compute and transfer
+
 } Context;
 

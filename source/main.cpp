@@ -8,6 +8,7 @@
 #include "context.h"
 #include "vulkan_instance.h"
 #include "validation_layers.h"
+#include "device.h"
 
 void initWindow(Context& ctx)
 {
@@ -19,8 +20,10 @@ void initWindow(Context& ctx)
 
 void initVulkan(Context& ctx)
 {
-    createInstance(ctx);
+    create_instance(ctx);
     setupDebugMessenger(ctx);
+    pickPhysicalDevice(ctx);
+    create_device(ctx);
 }
 
 void mainLoop(Context& ctx)
@@ -31,32 +34,33 @@ void mainLoop(Context& ctx)
     }
 }
 
-void cleanup(Context& ctx)
+void cleanup_vulkan(Context& ctx)
 {
+    cleanup_device(ctx);
     cleanup_validation_layers(ctx);
-    vkDestroyInstance(ctx.instance, nullptr);
+    cleanup_instance(ctx);
+}
+
+void cleanup_window(Context& ctx)
+{
     glfwDestroyWindow(ctx.window);
     glfwTerminate();
 }
 
-void run(Context& ctx)
-{
-    initWindow(ctx);
-    initVulkan(ctx);
-    mainLoop(ctx);
-    cleanup(ctx);
-}
-
 int main()
 {
-    Context ctx;
+    Context ctx = {};
 
     ctx.width = 800;
     ctx.height = 600;
 
     try
     {
-        run(ctx);
+        initWindow(ctx);
+        initVulkan(ctx);
+        mainLoop(ctx);
+        cleanup_vulkan(ctx);
+        cleanup_window(ctx);
     }
     catch (const std::exception& e)
     {

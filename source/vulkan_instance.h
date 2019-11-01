@@ -1,3 +1,4 @@
 #pragma once
 
-void createInstance(Context& ctx);
+void create_instance(Context& ctx);
+void cleanup_instance(Context& ctx);

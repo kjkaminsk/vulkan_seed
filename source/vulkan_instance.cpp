@@ -23,7 +23,12 @@ std::vector<const char*> getRequiredExtensions(Context& ctx)
     return extensions;
 }
 
-void createInstance(Context& ctx)
+void cleanup_instance(Context& ctx)
+{
+    vkDestroyInstance(ctx.instance, nullptr);
+}
+
+void create_instance(Context& ctx)
 {
     ctx.enableValidationLayers = true;
     //ctx.enableValidationLayers = false;
@@ -47,8 +52,8 @@ void createInstance(Context& ctx)
     createInfo.ppEnabledExtensionNames = extensions.data();
 
     VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-    auto validation_layers = get_validation_layers();
     if (ctx.enableValidationLayers) {
+        auto& validation_layers = get_validation_layers();
         createInfo.enabledLayerCount = static_cast<uint32_t>(validation_layers.size());
         createInfo.ppEnabledLayerNames = validation_layers.data();
 
