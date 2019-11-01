@@ -8,7 +8,8 @@
 #include "vulkan_instance.h"
 #include "validation_layers.h"
 
-std::vector<const char*> getRequiredExtensions(Context& ctx) {
+std::vector<const char*> getRequiredExtensions(Context& ctx)
+{
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
@@ -31,16 +32,14 @@ void createInstance(Context& ctx)
         throw std::runtime_error("validation layers requested, but not available!");
     }
 
-    VkApplicationInfo appInfo = {};
-    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    VkApplicationInfo appInfo = { VK_STRUCTURE_TYPE_APPLICATION_INFO };
     appInfo.pApplicationName = "Vulkan Seed";
     appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.pEngineName = "No Engine";
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
-    VkInstanceCreateInfo createInfo = {};
-    createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    VkInstanceCreateInfo createInfo = { VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO };
     createInfo.pApplicationInfo = &appInfo;
 
     auto extensions = getRequiredExtensions(ctx);
@@ -56,14 +55,12 @@ void createInstance(Context& ctx)
         populateDebugMessengerCreateInfo(debugCreateInfo);
         createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
     }
-    else {
-        createInfo.enabledLayerCount = 0;
+    //else {
+    //    createInfo.enabledLayerCount = 0;
+    //    createInfo.pNext = nullptr;
+    //}
 
-        createInfo.pNext = nullptr;
-    }
-
-    if (vkCreateInstance(&createInfo, nullptr, &ctx.instance) != VK_SUCCESS)
-    {
+    if (vkCreateInstance(&createInfo, nullptr, &ctx.instance) != VK_SUCCESS) {
         throw std::runtime_error("failed to create instance!");
     }
 }
