@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 bool checkValidationLayerSupport();
 void setupDebugMessenger(Context& ctx);
 void cleanup_validation_layers(Context& ctx);

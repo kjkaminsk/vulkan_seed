@@ -9,6 +9,7 @@ typedef struct Context_
     int height;
 
     GLFWwindow* window;
+    VkSurfaceKHR surface;
 
     VkInstance instance;
     bool enableValidationLayers;
@@ -16,7 +17,7 @@ typedef struct Context_
 
     VkPhysicalDevice physicalDevice;
     VkDevice device;
-    VkQueue queue; // use only one queue for: graphics, compute and transfer
+    VkQueue queue;
 
 } Context;
 

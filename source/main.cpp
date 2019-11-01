@@ -4,24 +4,20 @@
 #include <iostream>
 #include <stdexcept>
 #include <cstdlib>
+#include <vector>
 
 #include "context.h"
+#include "window.h"
 #include "vulkan_instance.h"
+#include "surface.h"
 #include "validation_layers.h"
 #include "device.h"
-
-void initWindow(Context& ctx)
-{
-    glfwInit();
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    ctx.window = glfwCreateWindow(ctx.width, ctx.height, "Vulkan", nullptr, nullptr);
-}
 
 void initVulkan(Context& ctx)
 {
     create_instance(ctx);
     setupDebugMessenger(ctx);
+    create_surface(ctx);
     pickPhysicalDevice(ctx);
     create_device(ctx);
 }
@@ -38,13 +34,8 @@ void cleanup_vulkan(Context& ctx)
 {
     cleanup_device(ctx);
     cleanup_validation_layers(ctx);
+    cleanup_surface(ctx);
     cleanup_instance(ctx);
-}
-
-void cleanup_window(Context& ctx)
-{
-    glfwDestroyWindow(ctx.window);
-    glfwTerminate();
 }
 
 int main()

@@ -1,11 +1,12 @@
 #include <vulkan/vulkan.h>
-#include <exception>
+#include <stdexcept>
 #include <vector>
 
 #include "context.h"
 #include "vulkan_instance.h"
 //#include "validation_layers.h"
 
+ // use only one queue for: graphics, compute, transfer and present
 uint32_t queue_family = UINT32_MAX;
 
 void create_device(Context& ctx)
@@ -46,7 +47,7 @@ void cleanup_device(Context& ctx)
     vkDestroyDevice(ctx.device, nullptr);
 }
 
-bool isDeviceSuitable(VkPhysicalDevice device)
+bool isDeviceSuitable(Context& ctx, VkPhysicalDevice device)
 {
     uint32_t queueFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
@@ -56,10 +57,14 @@ bool isDeviceSuitable(VkPhysicalDevice device)
 
     uint32_t i = 0;
     for (const auto& queueFamily : queueFamilies) {
-        if (queueFamily.queueFlags & (VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT)) {
+        VkBool32 presentSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, ctx.surface, &presentSupport);
+
+        if (presentSupport && (queueFamily.queueFlags & (VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT))) {
             queue_family = i;
             break;
         }
+
         i++;
     }
 
@@ -80,7 +85,7 @@ void pickPhysicalDevice(Context& ctx)
 
     // take the first device that supports requirements
     for (const auto& device : devices) {
-        if (isDeviceSuitable(device)) {
+        if (isDeviceSuitable(ctx, device)) {
             ctx.physicalDevice = device;
             break;
         }
