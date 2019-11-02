@@ -3,10 +3,12 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
+#include <vector>
+
 typedef struct Context_
 {
-    int width;
-    int height;
+    uint32_t width;
+    uint32_t height;
 
     GLFWwindow* window;
     VkSurfaceKHR surface;
@@ -15,9 +17,14 @@ typedef struct Context_
     bool enableValidationLayers;
     VkDebugUtilsMessengerEXT debugMessenger;
 
-    VkPhysicalDevice physicalDevice;
+    VkPhysicalDevice physical_device;
     VkDevice device;
     VkQueue queue;
+
+    VkSwapchainKHR swap_chain;
+    std::vector<VkImage> swapChainImages;
+    VkFormat swapChainImageFormat;
+    VkExtent2D swapChainExtent;
 
 } Context;
 

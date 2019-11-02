@@ -12,6 +12,7 @@
 #include "surface.h"
 #include "validation_layers.h"
 #include "device.h"
+#include "swap_chain.h"
 
 void initVulkan(Context& ctx)
 {
@@ -20,6 +21,7 @@ void initVulkan(Context& ctx)
     create_surface(ctx);
     pickPhysicalDevice(ctx);
     create_device(ctx);
+    create_swap_chain(ctx);
 }
 
 void mainLoop(Context& ctx)
@@ -32,6 +34,7 @@ void mainLoop(Context& ctx)
 
 void cleanup_vulkan(Context& ctx)
 {
+    cleanup_swap_chain(ctx);
     cleanup_device(ctx);
     cleanup_validation_layers(ctx);
     cleanup_surface(ctx);

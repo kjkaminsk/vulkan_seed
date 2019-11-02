@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include <stdexcept>
+#include <vector>
 
 #include "context.h"
 #include "surface.h"
