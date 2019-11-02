@@ -22,9 +22,10 @@ typedef struct Context_
     VkQueue queue;
 
     VkSwapchainKHR swap_chain;
-    std::vector<VkImage> swapChainImages;
     VkFormat swapChainImageFormat;
     VkExtent2D swapChainExtent;
+    std::vector<VkImage> swapChainImages;
+    std::vector<VkImageView> swapChainImageViews;
 
 } Context;
 
