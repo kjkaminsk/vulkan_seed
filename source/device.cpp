@@ -5,6 +5,7 @@
 
 #include "context.h"
 #include "vulkan_instance.h"
+#include "swap_chain.h"
 
  // use only one queue for: graphics, compute, transfer and present
 uint32_t queue_family = UINT32_MAX;
@@ -24,12 +25,13 @@ void create_device(Context& ctx)
     VkDeviceCreateInfo createInfo = { VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO };
     createInfo.pQueueCreateInfos = &queueCreateInfo;
     createInfo.queueCreateInfoCount = 1;
+    // no features requested yet
     //VkPhysicalDeviceFeatures deviceFeatures = {};
     //createInfo.pEnabledFeatures = &deviceFeatures;
     createInfo.enabledExtensionCount = static_cast<uint32_t>(rquired_device_extensions.size());
     createInfo.ppEnabledExtensionNames = rquired_device_extensions.data();
 
-    // providing validation layers is not required for new vulkna implementations (instance level handle them now)
+    // providing validation layers is not required for new vulkan implementations (instance level handle them now)
 
     if (vkCreateDevice(ctx.physical_device, &createInfo, nullptr, &ctx.device) != VK_SUCCESS) {
         throw std::runtime_error("failed to create logical device!");
@@ -60,6 +62,7 @@ bool are_extensions_supported(VkPhysicalDevice physical_device)
     return required.empty();
 }
 
+// Check common queue family support and record family index
 bool is_common_queue_found(Context& ctx, VkPhysicalDevice physical_device)
 {
     uint32_t queueFamilyCount = 0;
@@ -87,7 +90,8 @@ bool is_common_queue_found(Context& ctx, VkPhysicalDevice physical_device)
 bool isDeviceSuitable(Context& ctx, VkPhysicalDevice physical_device)
 {
     return is_common_queue_found(ctx, physical_device)
-           && are_extensions_supported(physical_device);
+           && are_extensions_supported(physical_device)
+           && is_swap_chain_acceptable(ctx, physical_device);
 }
 
 void pickPhysicalDevice(Context& ctx)

@@ -9,29 +9,32 @@
 struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
     std::vector<VkSurfaceFormatKHR> formats;
-    std::vector<VkPresentModeKHR> presentModes;
+    std::vector<VkPresentModeKHR> present_modes;
 };
 
-SwapChainSupportDetails querySwapChainSupport(Context& ctx)
+// query is used when physical devices are checked before choosing
+// and after creating device (so always a physical_device handle is passed)
+SwapChainSupportDetails querySwapChainSupport(Context& ctx, VkPhysicalDevice physical_device)
 {
     SwapChainSupportDetails details;
 
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(ctx.physical_device, ctx.surface, &details.capabilities);
+    // get surface capabilities
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical_device, ctx.surface, &details.capabilities);
 
+    // get surface formats
     uint32_t formatCount;
-    vkGetPhysicalDeviceSurfaceFormatsKHR(ctx.physical_device, ctx.surface, &formatCount, nullptr);
-
+    vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, ctx.surface, &formatCount, nullptr);
     if (formatCount != 0) {
         details.formats.resize(formatCount);
-        vkGetPhysicalDeviceSurfaceFormatsKHR(ctx.physical_device, ctx.surface, &formatCount, details.formats.data());
+        vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, ctx.surface, &formatCount, details.formats.data());
     }
 
+    // get surface present modes
     uint32_t presentModeCount;
-    vkGetPhysicalDeviceSurfacePresentModesKHR(ctx.physical_device, ctx.surface, &presentModeCount, nullptr);
-
+    vkGetPhysicalDeviceSurfacePresentModesKHR(physical_device, ctx.surface, &presentModeCount, nullptr);
     if (presentModeCount != 0) {
-        details.presentModes.resize(presentModeCount);
-        vkGetPhysicalDeviceSurfacePresentModesKHR(ctx.physical_device, ctx.surface, &presentModeCount, details.presentModes.data());
+        details.present_modes.resize(presentModeCount);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(physical_device, ctx.surface, &presentModeCount, details.present_modes.data());
     }
 
     return details;
@@ -73,6 +76,13 @@ VkExtent2D chooseSwapExtent(Context& ctx, const VkSurfaceCapabilitiesKHR& capabi
     }
 }
 
+// this check is used when physical devices are examined, so the context does not have physical_device chosen yet
+bool is_swap_chain_acceptable(Context& ctx, VkPhysicalDevice physical_device)
+{
+    SwapChainSupportDetails swapChainSupport = querySwapChainSupport(ctx, physical_device);
+    return !swapChainSupport.formats.empty() && !swapChainSupport.present_modes.empty();
+}
+
 void cleanup_swap_chain(Context& ctx)
 {
     vkDestroySwapchainKHR(ctx.device, ctx.swap_chain, nullptr);
@@ -80,10 +90,10 @@ void cleanup_swap_chain(Context& ctx)
 
 void create_swap_chain(Context& ctx)
 {
-    SwapChainSupportDetails swapChainSupport = querySwapChainSupport(ctx);
+    SwapChainSupportDetails swapChainSupport = querySwapChainSupport(ctx, ctx.physical_device);
 
     VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
-    VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
+    VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.present_modes);
     VkExtent2D extent = chooseSwapExtent(ctx, swapChainSupport.capabilities);
 
     uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
