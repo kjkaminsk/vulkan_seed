@@ -92,7 +92,7 @@ void create_image_views(Context& ctx)
 
     for (size_t i = 0; i < ctx.swapChainImageViews.size(); i++) {
         createInfo.image = ctx.swapChainImages[i];
-        createInfo.format = ctx.swapChainImageFormat;
+        createInfo.format = ctx.swap_chain_format;
         tif(FL, vkCreateImageView(ctx.device, &createInfo, nullptr, &ctx.swapChainImageViews[i]));
     }
 }
@@ -161,7 +161,9 @@ void create_swap_chain(Context& ctx)
     ctx.swapChainImages.resize(imageCount);
     vkGetSwapchainImagesKHR(ctx.device, ctx.swap_chain, &imageCount, ctx.swapChainImages.data());
 
-    ctx.swapChainImageFormat = surfaceFormat.format;
-    ctx.swapChainExtent = extent;
+    ctx.swap_chain_format = surfaceFormat.format;
+
+    //ctx.swapChainExtent = extent;
+    
     create_image_views(ctx);
 }

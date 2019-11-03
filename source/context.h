@@ -22,8 +22,8 @@ typedef struct Context_
     VkQueue queue;
 
     VkSwapchainKHR swap_chain;
-    VkFormat swapChainImageFormat;
-    VkExtent2D swapChainExtent;
+    VkFormat swap_chain_format;
+    //VkExtent2D swapChainExtent; 
     std::vector<VkImage> swapChainImages;
     std::vector<VkImageView> swapChainImageViews;
 

@@ -24,13 +24,15 @@ int main()
     ctx.width = 800;
     ctx.height = 600;
 
+    Graphics_Pass pass = {};
+
     try
     {
         init_window(ctx);
         init_vulkan(ctx);
-        create_graphics_pass(ctx);
+        create_graphics_pass(ctx, pass);
         main_loop(ctx);
-        destroy_graphics_pass(ctx);
+        destroy_graphics_pass(ctx, pass);
         cleanup_vulkan(ctx);
         cleanup_window(ctx);
     }

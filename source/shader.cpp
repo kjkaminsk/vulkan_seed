@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <vector>
 #include <fstream>
+#include <string>
 
 #include "context.h"
 #include "errors.h"
