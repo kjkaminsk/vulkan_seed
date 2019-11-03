@@ -8,6 +8,7 @@
 
 #include "context.h"
 #include "window.h"
+#include "graphics_pass.h"
 
 void main_loop(Context& ctx)
 {
@@ -27,7 +28,9 @@ int main()
     {
         init_window(ctx);
         init_vulkan(ctx);
+        create_graphics_pass(ctx);
         main_loop(ctx);
+        destroy_graphics_pass(ctx);
         cleanup_vulkan(ctx);
         cleanup_window(ctx);
     }
