@@ -29,3 +29,5 @@ typedef struct Context_
 
 } Context;
 
+void init_vulkan(Context& ctx);
+void cleanup_vulkan(Context& ctx);
