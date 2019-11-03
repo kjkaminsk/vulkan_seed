@@ -86,14 +86,14 @@ bool is_common_queue_found(Context& ctx, VkPhysicalDevice physical_device)
     return queue_family != UINT32_MAX;
 }
 
-bool isDeviceSuitable(Context& ctx, VkPhysicalDevice physical_device)
+bool is_device_good_enough(Context& ctx, VkPhysicalDevice physical_device)
 {
     return is_common_queue_found(ctx, physical_device)
            && are_extensions_supported(physical_device)
            && is_swap_chain_acceptable(ctx, physical_device);
 }
 
-void pickPhysicalDevice(Context& ctx)
+void choose_gpu(Context& ctx)
 {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(ctx.instance, &deviceCount, nullptr);
@@ -107,7 +107,7 @@ void pickPhysicalDevice(Context& ctx)
 
     // take the first device that supports requirements
     for (const auto& device : devices) {
-        if (isDeviceSuitable(ctx, device)) {
+        if (is_device_good_enough(ctx, device)) {
             ctx.physical_device = device;
             break;
         }

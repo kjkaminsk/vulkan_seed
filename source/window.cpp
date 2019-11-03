@@ -5,7 +5,7 @@
 
 #include "context.h"
 
-void initWindow(Context& ctx)
+void init_window(Context& ctx)
 {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);

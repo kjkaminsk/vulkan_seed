@@ -9,7 +9,7 @@
 #include "vulkan_instance.h"
 #include "validation_layers.h"
 
-std::vector<const char*> getRequiredExtensions(Context& ctx)
+std::vector<const char*> get_required_extensions(Context& ctx)
 {
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
@@ -17,7 +17,7 @@ std::vector<const char*> getRequiredExtensions(Context& ctx)
 
     std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
-    if (ctx.enableValidationLayers) {
+    if (ctx.enable_validation_layers) {
         extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     }
 
@@ -31,10 +31,10 @@ void cleanup_instance(Context& ctx)
 
 void create_instance(Context& ctx)
 {
-    ctx.enableValidationLayers = true;
-    //ctx.enableValidationLayers = false;
+    ctx.enable_validation_layers = true;
+    //ctx.enable_validation_layers = false;
 
-    if (ctx.enableValidationLayers && !checkValidationLayerSupport()) {
+    if (ctx.enable_validation_layers && !check_validation_layer_support()) {
         throw std::runtime_error("validation layers requested, but not available!");
     }
 
@@ -48,17 +48,17 @@ void create_instance(Context& ctx)
     VkInstanceCreateInfo createInfo = { VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO };
     createInfo.pApplicationInfo = &appInfo;
 
-    auto extensions = getRequiredExtensions(ctx);
+    auto extensions = get_required_extensions(ctx);
     createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
     createInfo.ppEnabledExtensionNames = extensions.data();
 
     VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-    if (ctx.enableValidationLayers) {
+    if (ctx.enable_validation_layers) {
         auto& validation_layers = get_validation_layers();
         createInfo.enabledLayerCount = static_cast<uint32_t>(validation_layers.size());
         createInfo.ppEnabledLayerNames = validation_layers.data();
 
-        populateDebugMessengerCreateInfo(debugCreateInfo);
+        populate_debug_messenger_create_info(debugCreateInfo);
         createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
     }
 

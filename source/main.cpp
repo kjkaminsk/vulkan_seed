@@ -14,17 +14,17 @@
 #include "device.h"
 #include "swap_chain.h"
 
-void initVulkan(Context& ctx)
+void init_vulkan(Context& ctx)
 {
     create_instance(ctx);
-    setupDebugMessenger(ctx);
+    create_debug_messenger(ctx);
     create_surface(ctx);
-    pickPhysicalDevice(ctx);
+    choose_gpu(ctx);
     create_device(ctx);
     create_swap_chain(ctx);
 }
 
-void mainLoop(Context& ctx)
+void main_loop(Context& ctx)
 {
     while (!glfwWindowShouldClose(ctx.window))
     {
@@ -49,9 +49,9 @@ int main()
 
     try
     {
-        initWindow(ctx);
-        initVulkan(ctx);
-        mainLoop(ctx);
+        init_window(ctx);
+        init_vulkan(ctx);
+        main_loop(ctx);
         cleanup_vulkan(ctx);
         cleanup_window(ctx);
     }

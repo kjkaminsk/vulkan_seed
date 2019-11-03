@@ -7,7 +7,7 @@
 #include "errors.h"
 #include "swap_chain.h"
 
-struct SwapChainSupportDetails {
+struct Swap_Chain_Support_Details {
     VkSurfaceCapabilitiesKHR capabilities;
     std::vector<VkSurfaceFormatKHR> formats;
     std::vector<VkPresentModeKHR> present_modes;
@@ -15,9 +15,9 @@ struct SwapChainSupportDetails {
 
 // query is used when physical devices are checked before choosing
 // and after creating device (so always a physical_device handle is passed)
-SwapChainSupportDetails querySwapChainSupport(Context& ctx, VkPhysicalDevice physical_device)
+Swap_Chain_Support_Details query_swap_chain_support(Context& ctx, VkPhysicalDevice physical_device)
 {
-    SwapChainSupportDetails details;
+    Swap_Chain_Support_Details details;
 
     // get surface capabilities
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical_device, ctx.surface, &details.capabilities);
@@ -42,7 +42,7 @@ SwapChainSupportDetails querySwapChainSupport(Context& ctx, VkPhysicalDevice phy
 }
 
 // prefer BGRA NONLINEAR, if not found, take the first one
-VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
+VkSurfaceFormatKHR choose_swap_surface_format(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
     for (const auto& availableFormat : availableFormats) {
         if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
             return availableFormat;
@@ -53,7 +53,7 @@ VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>
 }
 
 // prefer MAILBOX, if not found blindly take FIFO as always supported
-VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)
+VkPresentModeKHR choose_swap_present_mode(const std::vector<VkPresentModeKHR>& availablePresentModes)
 {
     for (const auto& availablePresentMode : availablePresentModes) {
         if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
@@ -65,7 +65,7 @@ VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& avai
 }
 
 // width capabilites == MAX means, don't care, so simply take what is needed
-VkExtent2D chooseSwapExtent(Context& ctx, const VkSurfaceCapabilitiesKHR& capabilities)
+VkExtent2D choose_swap_extent(Context& ctx, const VkSurfaceCapabilitiesKHR& capabilities)
 {
     if (capabilities.currentExtent.width != UINT32_MAX) {
         return capabilities.currentExtent;
@@ -100,7 +100,7 @@ void create_image_views(Context& ctx)
 // this check is used when physical devices are examined, so the context does not have physical_device chosen yet
 bool is_swap_chain_acceptable(Context& ctx, VkPhysicalDevice physical_device)
 {
-    SwapChainSupportDetails swapChainSupport = querySwapChainSupport(ctx, physical_device);
+    Swap_Chain_Support_Details swapChainSupport = query_swap_chain_support(ctx, physical_device);
     return !swapChainSupport.formats.empty() && !swapChainSupport.present_modes.empty();
 }
 
@@ -115,11 +115,11 @@ void cleanup_swap_chain(Context& ctx)
 
 void create_swap_chain(Context& ctx)
 {
-    SwapChainSupportDetails swapChainSupport = querySwapChainSupport(ctx, ctx.physical_device);
+    Swap_Chain_Support_Details swapChainSupport = query_swap_chain_support(ctx, ctx.physical_device);
 
-    VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
-    VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.present_modes);
-    VkExtent2D extent = chooseSwapExtent(ctx, swapChainSupport.capabilities);
+    VkSurfaceFormatKHR surfaceFormat = choose_swap_surface_format(swapChainSupport.formats);
+    VkPresentModeKHR presentMode = choose_swap_present_mode(swapChainSupport.present_modes);
+    VkExtent2D extent = choose_swap_extent(ctx, swapChainSupport.capabilities);
 
     if (extent.width != ctx.width || extent.height != ctx.height) {
         throw std::runtime_error("resolution not supported!");

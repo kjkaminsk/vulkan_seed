@@ -37,7 +37,7 @@ std::vector<const char*>& get_validation_layers()
     return validationLayers;
 }
 
-static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+static VKAPI_ATTR VkBool32 VKAPI_CALL debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
                                                     VkDebugUtilsMessageTypeFlagsEXT messageType,
                                                     const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
                                                     void* pUserData)
@@ -46,7 +46,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityF
     return VK_FALSE;
 }
 
-bool checkValidationLayerSupport()
+bool check_validation_layer_support()
 {
     uint32_t layerCount;
     vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -72,19 +72,19 @@ bool checkValidationLayerSupport()
     return true;
 }
 
-void setupDebugMessenger(Context& ctx)
+void create_debug_messenger(Context& ctx)
 {
-    if (!ctx.enableValidationLayers) {
+    if (!ctx.enable_validation_layers) {
         return;
     }
 
     VkDebugUtilsMessengerCreateInfoEXT createInfo;
-    populateDebugMessengerCreateInfo(createInfo);
+    populate_debug_messenger_create_info(createInfo);
 
     tif(FL, CreateDebugUtilsMessengerEXT(ctx.instance, &createInfo, nullptr, &ctx.debugMessenger));
 }
 
-void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo)
+void populate_debug_messenger_create_info(VkDebugUtilsMessengerCreateInfoEXT& createInfo)
 {
     createInfo = { VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT };
     createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT
@@ -93,12 +93,12 @@ void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& create
     createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT
                              | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT
                              | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-    createInfo.pfnUserCallback = debugCallback;
+    createInfo.pfnUserCallback = debug_callback;
 }
 
 void cleanup_validation_layers(Context& ctx)
 {
-    if (ctx.enableValidationLayers) {
+    if (ctx.enable_validation_layers) {
         DestroyDebugUtilsMessengerEXT(ctx.instance, ctx.debugMessenger, nullptr);
     }
 }

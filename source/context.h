@@ -14,7 +14,7 @@ typedef struct Context_
     VkSurfaceKHR surface;
 
     VkInstance instance;
-    bool enableValidationLayers;
+    bool enable_validation_layers;
     VkDebugUtilsMessengerEXT debugMessenger;
 
     VkPhysicalDevice physical_device;
