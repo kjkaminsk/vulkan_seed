@@ -1,5 +1,4 @@
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
+#include <vulkan/vulkan.h>
 
 #include <stdexcept>
 #include <vector>
@@ -8,14 +7,11 @@
 #include "errors.h"
 #include "vulkan_instance.h"
 #include "validation_layers.h"
+#include "window.h"
 
 std::vector<const char*> get_required_extensions(Context& ctx)
 {
-    uint32_t glfwExtensionCount = 0;
-    const char** glfwExtensions;
-    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-    std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+    auto extensions = get_required_glfw_extensions(ctx);
 
     if (ctx.enable_validation_layers) {
         extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);

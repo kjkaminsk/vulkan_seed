@@ -52,7 +52,6 @@ std::string get_result_name(VkResult result)
 // don't want to write 3 lines instead of 1 and providing not so usefull message.
 // exceptions will break the app and allow for RAII if used
 // an exception can be catched in main() or left unhandled, the point is not to contiue
-#define FL __FILE__, __LINE__
 void tif(char * file_line, int line, VkResult result)
 {
     if (result != VK_SUCCESS) {

@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "context.h"
+#include "errors.h"
 
 void init_window(Context& ctx)
 {
@@ -19,3 +20,18 @@ void cleanup_window(Context& ctx)
     glfwTerminate();
 }
 
+void create_surface_by_glfw(Context& ctx)
+{
+    tif(FL, glfwCreateWindowSurface(ctx.instance, ctx.window, nullptr, &ctx.surface));
+}
+
+std::vector<const char*> get_required_glfw_extensions(Context& ctx)
+{
+    uint32_t glfwExtensionCount = 0;
+    const char** glfwExtensions;
+    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+    std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+
+    return extensions;
+}

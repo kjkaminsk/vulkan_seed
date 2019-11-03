@@ -1,12 +1,7 @@
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-
-#include <stdexcept>
-#include <vector>
-
 #include "context.h"
 #include "errors.h"
 #include "surface.h"
+#include "window.h"
 
 void create_surface(Context& ctx) {
     //VkWin32SurfaceCreateInfoKHR createInfo = {};
@@ -16,7 +11,9 @@ void create_surface(Context& ctx) {
     //if (vkCreateWin32SurfaceKHR(instance, &createInfo, nullptr, &surface) != VK_SUCCESS) {
     //    throw std::runtime_error("failed to create window surface!");
     //}
-    tif(FL, glfwCreateWindowSurface(ctx.instance, ctx.window, nullptr, &ctx.surface));
+    //tif(FL, glfwCreateWindowSurface(ctx.instance, ctx.window, nullptr, &ctx.surface));
+
+    create_surface_by_glfw(ctx);
 }
 
 void cleanup_surface(Context& ctx)
