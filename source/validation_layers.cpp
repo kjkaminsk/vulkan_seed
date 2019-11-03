@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "context.h"
+#include "errors.h"
 #include "validation_layers.h"
 
 VkResult CreateDebugUtilsMessengerEXT(VkInstance instance,
@@ -80,9 +81,7 @@ void setupDebugMessenger(Context& ctx)
     VkDebugUtilsMessengerCreateInfoEXT createInfo;
     populateDebugMessengerCreateInfo(createInfo);
 
-    if (CreateDebugUtilsMessengerEXT(ctx.instance, &createInfo, nullptr, &ctx.debugMessenger) != VK_SUCCESS) {
-        throw std::runtime_error("failed to set up debug messenger!");
-    }
+    tif(FL, CreateDebugUtilsMessengerEXT(ctx.instance, &createInfo, nullptr, &ctx.debugMessenger));
 }
 
 void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo)

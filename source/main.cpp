@@ -44,7 +44,6 @@ void cleanup_vulkan(Context& ctx)
 int main()
 {
     Context ctx = {};
-
     ctx.width = 800;
     ctx.height = 600;
 

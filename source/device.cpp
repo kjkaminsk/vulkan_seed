@@ -4,6 +4,7 @@
 #include <set>
 
 #include "context.h"
+#include "errors.h"
 #include "vulkan_instance.h"
 #include "swap_chain.h"
 
@@ -33,9 +34,7 @@ void create_device(Context& ctx)
 
     // providing validation layers is not required for new vulkan implementations (instance level handle them now)
 
-    if (vkCreateDevice(ctx.physical_device, &createInfo, nullptr, &ctx.device) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create logical device!");
-    }
+    tif(FL, vkCreateDevice(ctx.physical_device, &createInfo, nullptr, &ctx.device));
 
     vkGetDeviceQueue(ctx.device, queue_family, 0, &ctx.queue);
 }

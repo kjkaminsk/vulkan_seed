@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "context.h"
+#include "errors.h"
 #include "vulkan_instance.h"
 #include "validation_layers.h"
 
@@ -60,13 +61,7 @@ void create_instance(Context& ctx)
         populateDebugMessengerCreateInfo(debugCreateInfo);
         createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
     }
-    //else {
-    //    createInfo.enabledLayerCount = 0;
-    //    createInfo.pNext = nullptr;
-    //}
 
-    if (vkCreateInstance(&createInfo, nullptr, &ctx.instance) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create instance!");
-    }
+    tif(FL, vkCreateInstance(&createInfo, nullptr, &ctx.instance));
 }
 

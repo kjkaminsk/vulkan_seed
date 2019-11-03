@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #include "context.h"
+#include "errors.h"
 #include "swap_chain.h"
 
 struct SwapChainSupportDetails {
@@ -92,9 +93,7 @@ void create_image_views(Context& ctx)
     for (size_t i = 0; i < ctx.swapChainImageViews.size(); i++) {
         createInfo.image = ctx.swapChainImages[i];
         createInfo.format = ctx.swapChainImageFormat;
-        if (vkCreateImageView(ctx.device, &createInfo, nullptr, &ctx.swapChainImageViews[i]) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create image views!");
-        }
+        tif(FL, vkCreateImageView(ctx.device, &createInfo, nullptr, &ctx.swapChainImageViews[i]));
     }
 }
 
@@ -108,7 +107,7 @@ bool is_swap_chain_acceptable(Context& ctx, VkPhysicalDevice physical_device)
 void cleanup_swap_chain(Context& ctx)
 {
     for (auto imageView : ctx.swapChainImageViews) {
-        //vkDestroyImageView(ctx.device, imageView, nullptr);
+        vkDestroyImageView(ctx.device, imageView, nullptr);
     }
     // images will be destroyed by swap chain automatically
     vkDestroySwapchainKHR(ctx.device, ctx.swap_chain, nullptr);
@@ -156,9 +155,7 @@ void create_swap_chain(Context& ctx)
     // for window resize the old swap chain must be referenced
     createInfo.oldSwapchain = nullptr;
 
-    if (vkCreateSwapchainKHR(ctx.device, &createInfo, nullptr, &ctx.swap_chain) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create swap chain!");
-    }
+    tif(FL, vkCreateSwapchainKHR(ctx.device, &createInfo, nullptr, &ctx.swap_chain));
 
     vkGetSwapchainImagesKHR(ctx.device, ctx.swap_chain, &imageCount, nullptr);
     ctx.swapChainImages.resize(imageCount);
