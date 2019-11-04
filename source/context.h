@@ -18,8 +18,11 @@ typedef struct Context_
     VkDebugUtilsMessengerEXT debugMessenger;
 
     VkPhysicalDevice physical_device;
+    // use only one queue for: graphics, compute, transfer and present
+    uint32_t queue_family;
     VkDevice device;
     VkQueue queue;
+    VkCommandPool cmd_pool;
 
     VkSwapchainKHR swap_chain;
     VkFormat swap_chain_format;

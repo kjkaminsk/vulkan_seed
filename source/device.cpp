@@ -8,17 +8,23 @@
 #include "vulkan_instance.h"
 #include "swap_chain.h"
 
- // use only one queue for: graphics, compute, transfer and present
-uint32_t queue_family = UINT32_MAX;
 
 const std::vector<const char*> rquired_device_extensions = {
     VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
 
+void create_command_pool(Context& ctx)
+{
+    VkCommandPoolCreateInfo poolInfo = { VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO };
+    poolInfo.queueFamilyIndex = ctx.queue_family;
+
+    tif(FL, vkCreateCommandPool(ctx.device, &poolInfo, nullptr, &ctx.cmd_pool));
+}
+
 void create_device(Context& ctx)
 {
     VkDeviceQueueCreateInfo queueCreateInfo = { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO };
-    queueCreateInfo.queueFamilyIndex = queue_family;
+    queueCreateInfo.queueFamilyIndex = ctx.queue_family;
     queueCreateInfo.queueCount = 1;
     float queuePriority = 1.0f;
     queueCreateInfo.pQueuePriorities = &queuePriority;
@@ -36,11 +42,13 @@ void create_device(Context& ctx)
 
     tif(FL, vkCreateDevice(ctx.physical_device, &createInfo, nullptr, &ctx.device));
 
-    vkGetDeviceQueue(ctx.device, queue_family, 0, &ctx.queue);
+    vkGetDeviceQueue(ctx.device, ctx.queue_family, 0, &ctx.queue);
+    create_command_pool(ctx);
 }
 
 void cleanup_device(Context& ctx)
 {
+    vkDestroyCommandPool(ctx.device, ctx.cmd_pool, nullptr);
     vkDestroyDevice(ctx.device, nullptr);
 }
 
@@ -64,6 +72,7 @@ bool are_extensions_supported(VkPhysicalDevice physical_device)
 // Check common queue family support and record family index
 bool is_common_queue_found(Context& ctx, VkPhysicalDevice physical_device)
 {
+    uint32_t queue_family = UINT32_MAX;
     uint32_t queueFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(physical_device, &queueFamilyCount, nullptr);
 
