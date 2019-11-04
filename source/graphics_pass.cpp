@@ -54,15 +54,55 @@ void create_framebuffers(Context& ctx, Graphics_Pass& pass)
     }
 }
 
+void create_command_buffers(Context& ctx, Graphics_Pass& pass)
+{
+    pass.cmd_buffers.resize(pass.swap_chain_framebuffers.size());
+
+    VkCommandBufferAllocateInfo allocInfo = { VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO };
+    allocInfo.commandPool = ctx.cmd_pool;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = (uint32_t)pass.cmd_buffers.size();
+
+    tif(FL, vkAllocateCommandBuffers(ctx.device, &allocInfo, pass.cmd_buffers.data()));
+
+    for (size_t i = 0; i < pass.cmd_buffers.size(); i++) {
+        VkCommandBufferBeginInfo beginInfo = { VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO };
+        tif(FL, vkBeginCommandBuffer(pass.cmd_buffers[i], &beginInfo));
+
+        VkRenderPassBeginInfo renderPassInfo = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
+        renderPassInfo.renderPass = pass.render_pass;
+        renderPassInfo.framebuffer = pass.swap_chain_framebuffers[i];
+        renderPassInfo.renderArea.offset = { 0, 0 };
+        renderPassInfo.renderArea.extent = { ctx.width, ctx.height };
+
+        VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+        renderPassInfo.clearValueCount = 1;
+        renderPassInfo.pClearValues = &clearColor;
+
+        vkCmdBeginRenderPass(pass.cmd_buffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+        vkCmdBindPipeline(pass.cmd_buffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pass.pipeline);
+
+        vkCmdDraw(pass.cmd_buffers[i], 3, 1, 0, 0);
+
+        vkCmdEndRenderPass(pass.cmd_buffers[i]);
+
+        tif(FL, vkEndCommandBuffer(pass.cmd_buffers[i]));
+    }
+
+}
+
 void create_graphics_pass(Context& ctx, Graphics_Pass& pass)
 {
     create_render_pass(ctx, pass);
     create_framebuffers(ctx, pass);
     create_graphics_pipeline(ctx, pass);
+    create_command_buffers(ctx, pass);
 }
 
 void destroy_graphics_pass(Context& ctx, Graphics_Pass& pass)
 {
+    vkFreeCommandBuffers(ctx.device, ctx.cmd_pool, (uint32_t)pass.cmd_buffers.size(), pass.cmd_buffers.data());
     destroy_graphics_pipeline(ctx, pass);
     for (auto framebuffer : pass.swap_chain_framebuffers) {
         vkDestroyFramebuffer(ctx.device, framebuffer, nullptr);

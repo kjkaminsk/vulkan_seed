@@ -7,7 +7,7 @@ typedef struct Graphics_Pass_ {
     VkPipeline pipeline;
     VkRenderPass render_pass;
     std::vector<VkFramebuffer> swap_chain_framebuffers;
-
+    std::vector<VkCommandBuffer> cmd_buffers;
 } Graphics_Pass;
 
 void create_graphics_pass(Context& ctx, Graphics_Pass& pass);
