@@ -93,8 +93,6 @@ void create_graphics_pipeline(Context& ctx, Graphics_Pass& pass)
     pipelineInfo.pColorBlendState = &colorBlending;
     pipelineInfo.layout = pass.p_layout;
     pipelineInfo.renderPass = pass.render_pass;
-    pipelineInfo.subpass = 0;
-    pipelineInfo.basePipelineHandle = nullptr;
 
     tif(FL, vkCreateGraphicsPipelines(ctx.device, nullptr, 1, &pipelineInfo, nullptr, &pass.pipeline));
 }

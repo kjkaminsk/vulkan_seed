@@ -10,11 +10,18 @@
 #include "window.h"
 #include "graphics_pass.h"
 
+void draw()
+{
+
+}
+
 void main_loop(Context& ctx)
 {
     while (!glfwWindowShouldClose(ctx.window))
     {
         glfwPollEvents();
+
+        draw();
     }
 }
 

@@ -17,6 +17,7 @@ void create_command_pool(Context& ctx)
 {
     VkCommandPoolCreateInfo poolInfo = { VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO };
     poolInfo.queueFamilyIndex = ctx.queue_family;
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
     tif(FL, vkCreateCommandPool(ctx.device, &poolInfo, nullptr, &ctx.cmd_pool));
 }
