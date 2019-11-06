@@ -29,7 +29,8 @@ typedef struct Context_
     //VkExtent2D swapChainExtent; 
     std::vector<VkImage> swapChainImages;
     std::vector<VkImageView> swapChainImageViews;
-
+    VkSemaphore image_acquired;
+    VkSemaphore rendering_complete;
 } Context;
 
 void init_vulkan(Context& ctx);

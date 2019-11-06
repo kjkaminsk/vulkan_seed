@@ -4,6 +4,7 @@
 #include "validation_layers.h"
 #include "device.h"
 #include "swap_chain.h"
+#include "synchronization.h"
 
 void init_vulkan(Context& ctx)
 {
@@ -13,10 +14,12 @@ void init_vulkan(Context& ctx)
     choose_gpu(ctx);
     create_device(ctx);
     create_swap_chain(ctx);
+    create_semaphores(ctx);
 }
 
 void cleanup_vulkan(Context& ctx)
 {
+    cleanup_semaphores(ctx);
     cleanup_swap_chain(ctx);
     cleanup_device(ctx);
     cleanup_validation_layers(ctx);
