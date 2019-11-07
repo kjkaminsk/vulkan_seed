@@ -24,10 +24,19 @@ void draw(Context& ctx, Graphics_Pass& pass)
     submitInfo.pWaitDstStageMask = waitStages;
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &pass.cmd_buffers[image_index];
-    VkSemaphore signalSemaphores[] = { ctx.rendering_complete };
     submitInfo.signalSemaphoreCount = 1;
-    submitInfo.pSignalSemaphores = signalSemaphores;
+    submitInfo.pSignalSemaphores = &ctx.rendering_complete;
     tif(FL, vkQueueSubmit(ctx.queue, 1, &submitInfo, nullptr));
+
+    VkPresentInfoKHR presentInfo = { VK_STRUCTURE_TYPE_PRESENT_INFO_KHR };
+    presentInfo.waitSemaphoreCount = 1;
+    presentInfo.pWaitSemaphores = &ctx.rendering_complete;
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains = &ctx.swap_chain;
+    presentInfo.pImageIndices = &image_index;
+    vkQueuePresentKHR(ctx.queue, &presentInfo);
+
+    vkQueueWaitIdle(ctx.queue);
 }
 
 void main_loop(Context& ctx, Graphics_Pass& pass)
@@ -38,6 +47,7 @@ void main_loop(Context& ctx, Graphics_Pass& pass)
 
         draw(ctx, pass);
     }
+    vkDeviceWaitIdle(ctx.device);
 }
 
 int main()
