@@ -6,6 +6,18 @@
 #include "errors.h"
 #include "synchronization.h"
 
+void create_fence(Context& ctx)
+{
+    VkFenceCreateInfo fenceInfo = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
+    fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+    tif(FL, vkCreateFence(ctx.device, &fenceInfo, nullptr, &ctx.fence));
+}
+
+void cleanup_fence(Context& ctx)
+{
+    vkDestroyFence(ctx.device, ctx.fence, nullptr);
+}
+
 void create_semaphores(Context& ctx)
 {
     VkSemaphoreCreateInfo semaphoreInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO };

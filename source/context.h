@@ -31,6 +31,7 @@ typedef struct Context_
     std::vector<VkImageView> swapChainImageViews;
     VkSemaphore image_acquired;
     VkSemaphore rendering_complete;
+    VkFence fence;
 } Context;
 
 void init_vulkan(Context& ctx);

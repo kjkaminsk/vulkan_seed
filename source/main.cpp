@@ -13,6 +13,9 @@
 
 void draw(Context& ctx, Graphics_Pass& pass)
 {
+    vkWaitForFences(ctx.device, 1, &ctx.fence, VK_TRUE, UINT64_MAX);
+    vkResetFences(ctx.device, 1, &ctx.fence);
+
     uint32_t image_index;
     vkAcquireNextImageKHR(ctx.device, ctx.swap_chain, UINT64_MAX, ctx.image_acquired, nullptr, &image_index);
 
@@ -26,7 +29,7 @@ void draw(Context& ctx, Graphics_Pass& pass)
     submitInfo.pCommandBuffers = &pass.cmd_buffers[image_index];
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = &ctx.rendering_complete;
-    tif(FL, vkQueueSubmit(ctx.queue, 1, &submitInfo, nullptr));
+    tif(FL, vkQueueSubmit(ctx.queue, 1, &submitInfo, ctx.fence));
 
     VkPresentInfoKHR presentInfo = { VK_STRUCTURE_TYPE_PRESENT_INFO_KHR };
     presentInfo.waitSemaphoreCount = 1;

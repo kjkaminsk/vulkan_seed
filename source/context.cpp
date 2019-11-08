@@ -15,10 +15,12 @@ void init_vulkan(Context& ctx)
     create_device(ctx);
     create_swap_chain(ctx);
     create_semaphores(ctx);
+    create_fence(ctx);
 }
 
 void cleanup_vulkan(Context& ctx)
 {
+    cleanup_fence(ctx);
     cleanup_semaphores(ctx);
     cleanup_swap_chain(ctx);
     cleanup_device(ctx);
