@@ -24,13 +24,14 @@ typedef struct Context_
     VkQueue queue;
     VkCommandPool cmd_pool;
 
+	uint32_t image_count;
     VkSwapchainKHR swap_chain;
     VkFormat swap_chain_format;
     //VkExtent2D swapChainExtent; 
     std::vector<VkImage> swapChainImages;
     std::vector<VkImageView> swapChainImageViews;
-    VkSemaphore image_acquired;
-    VkSemaphore rendering_complete;
+	VkSemaphore image_acquired;
+	std::vector<VkSemaphore> rendering_complete;
     VkFence fence;
 } Context;
 

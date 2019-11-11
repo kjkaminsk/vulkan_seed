@@ -22,12 +22,12 @@ void draw_frame(Context& ctx, Graphics_Pass& pass)
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &pass.cmd_buffers[image_index];
 	submitInfo.signalSemaphoreCount = 1;
-	submitInfo.pSignalSemaphores = &ctx.rendering_complete;
+	submitInfo.pSignalSemaphores = &ctx.rendering_complete[image_index];
 	tif(FL, vkQueueSubmit(ctx.queue, 1, &submitInfo, ctx.fence));
 
 	VkPresentInfoKHR presentInfo = { VK_STRUCTURE_TYPE_PRESENT_INFO_KHR };
 	presentInfo.waitSemaphoreCount = 1;
-	presentInfo.pWaitSemaphores = &ctx.rendering_complete;
+	presentInfo.pWaitSemaphores = &ctx.rendering_complete[image_index];
 	presentInfo.swapchainCount = 1;
 	presentInfo.pSwapchains = &ctx.swap_chain;
 	presentInfo.pImageIndices = &image_index;

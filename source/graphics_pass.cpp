@@ -49,7 +49,7 @@ void create_render_pass(Context& ctx, Graphics_Pass& pass) {
 
 void create_framebuffers(Context& ctx, Graphics_Pass& pass)
 {
-    pass.swap_chain_framebuffers.resize(ctx.swapChainImageViews.size());
+    pass.swap_chain_framebuffers.resize(ctx.image_count);
 
     for (size_t i = 0; i < pass.swap_chain_framebuffers.size(); i++) {
         VkFramebufferCreateInfo framebufferInfo = { VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO };
@@ -66,7 +66,7 @@ void create_framebuffers(Context& ctx, Graphics_Pass& pass)
 
 void create_command_buffers(Context& ctx, Graphics_Pass& pass)
 {
-    pass.cmd_buffers.resize(pass.swap_chain_framebuffers.size());
+    pass.cmd_buffers.resize(ctx.image_count);
 
     VkCommandBufferAllocateInfo allocInfo = { VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO };
     allocInfo.commandPool = ctx.cmd_pool;

@@ -82,7 +82,7 @@ VkExtent2D choose_swap_extent(Context& ctx, const VkSurfaceCapabilitiesKHR& capa
 
 void create_image_views(Context& ctx)
 {
-    ctx.swapChainImageViews.resize(ctx.swapChainImages.size());
+    ctx.swapChainImageViews.resize(ctx.image_count);
 
     VkImageViewCreateInfo createInfo = { VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO };
     createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
@@ -125,14 +125,14 @@ void create_swap_chain(Context& ctx)
         throw std::runtime_error("resolution not supported!");
     }
 
-    uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
-    if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
-        imageCount = swapChainSupport.capabilities.maxImageCount;
+    ctx.image_count = swapChainSupport.capabilities.minImageCount + 1;
+    if (swapChainSupport.capabilities.maxImageCount > 0 && ctx.image_count > swapChainSupport.capabilities.maxImageCount) {
+		ctx.image_count = swapChainSupport.capabilities.maxImageCount;
     }
 
     VkSwapchainCreateInfoKHR createInfo = { VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR };
     createInfo.surface = ctx.surface;
-    createInfo.minImageCount = imageCount;
+    createInfo.minImageCount = ctx.image_count;
     createInfo.imageFormat = surfaceFormat.format;
     createInfo.imageColorSpace = surfaceFormat.colorSpace;
     createInfo.imageExtent = extent;
@@ -157,9 +157,9 @@ void create_swap_chain(Context& ctx)
 
     tif(FL, vkCreateSwapchainKHR(ctx.device, &createInfo, nullptr, &ctx.swap_chain));
 
-    vkGetSwapchainImagesKHR(ctx.device, ctx.swap_chain, &imageCount, nullptr);
-    ctx.swapChainImages.resize(imageCount);
-    vkGetSwapchainImagesKHR(ctx.device, ctx.swap_chain, &imageCount, ctx.swapChainImages.data());
+    vkGetSwapchainImagesKHR(ctx.device, ctx.swap_chain, &ctx.image_count, nullptr);
+    ctx.swapChainImages.resize(ctx.image_count);
+    vkGetSwapchainImagesKHR(ctx.device, ctx.swap_chain, &ctx.image_count, ctx.swapChainImages.data());
 
     ctx.swap_chain_format = surfaceFormat.format;
 
