@@ -72,10 +72,17 @@ VkExtent2D choose_swap_extent(Context& ctx, const VkSurfaceCapabilitiesKHR& capa
         return capabilities.currentExtent;
     }
     else {
-        VkExtent2D actualExtent = { ctx.width, ctx.height };
+        // initially ctx.width, ctx.height would be OK
+        // VkExtent2D actualExtent = { ctx.width, ctx.height };
+        // but after resizing the window, we don't know the actual extent resolution
+        int width, height;
+        glfwGetFramebufferSize(ctx.window, &width, &height);
+        VkExtent2D actualExtent = { (uint32_t)width, (uint32_t)height };
 
-        actualExtent.width = std::max(capabilities.minImageExtent.width, std::min(capabilities.maxImageExtent.width, actualExtent.width));
-        actualExtent.height = std::max(capabilities.minImageExtent.height, std::min(capabilities.maxImageExtent.height, actualExtent.height));
+        actualExtent.width = std::max(capabilities.minImageExtent.width,
+                                      std::min(capabilities.maxImageExtent.width, actualExtent.width));
+        actualExtent.height = std::max(capabilities.minImageExtent.height,
+                                       std::min(capabilities.maxImageExtent.height, actualExtent.height));
 
         return actualExtent;
     }
@@ -123,8 +130,9 @@ void create_swap_chain(Context& ctx)
     VkExtent2D extent = choose_swap_extent(ctx, swapChainSupport.capabilities);
 
     if (extent.width != ctx.width || extent.height != ctx.height) {
-        //throw std::runtime_error("resolution not supported!");
         std::cout << "resolution changed: " << extent.width << "x" << extent.height <<std::endl;
+        ctx.width = extent.width;
+        ctx.height = extent.height;
     }
 
     ctx.image_count = swapChainSupport.capabilities.minImageCount + 1;
@@ -155,7 +163,8 @@ void create_swap_chain(Context& ctx)
     createInfo.clipped = VK_TRUE;
 
     // for window resize the old swap chain must be referenced
-    createInfo.oldSwapchain = nullptr;
+    // what if not?
+    // createInfo.oldSwapchain = nullptr;
 
     tif(FL, vkCreateSwapchainKHR(ctx.device, &createInfo, nullptr, &ctx.swap_chain));
 
