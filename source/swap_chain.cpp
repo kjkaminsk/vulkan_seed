@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 #include "context.h"
 #include "errors.h"
@@ -122,12 +123,13 @@ void create_swap_chain(Context& ctx)
     VkExtent2D extent = choose_swap_extent(ctx, swapChainSupport.capabilities);
 
     if (extent.width != ctx.width || extent.height != ctx.height) {
-        throw std::runtime_error("resolution not supported!");
+        //throw std::runtime_error("resolution not supported!");
+        std::cout << "resolution changed: " << extent.width << "x" << extent.height <<std::endl;
     }
 
     ctx.image_count = swapChainSupport.capabilities.minImageCount + 1;
     if (swapChainSupport.capabilities.maxImageCount > 0 && ctx.image_count > swapChainSupport.capabilities.maxImageCount) {
-		ctx.image_count = swapChainSupport.capabilities.maxImageCount;
+        ctx.image_count = swapChainSupport.capabilities.maxImageCount;
     }
 
     VkSwapchainCreateInfoKHR createInfo = { VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR };
@@ -164,6 +166,6 @@ void create_swap_chain(Context& ctx)
     ctx.swap_chain_format = surfaceFormat.format;
 
     //ctx.swapChainExtent = extent;
-    
+
     create_image_views(ctx);
 }

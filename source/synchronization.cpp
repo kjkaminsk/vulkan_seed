@@ -22,17 +22,17 @@ void create_semaphores(Context& ctx)
 {
     VkSemaphoreCreateInfo semaphoreInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO };
 
-	tif(FL, vkCreateSemaphore(ctx.device, &semaphoreInfo, nullptr, &ctx.image_acquired));
-	ctx.rendering_complete.resize(ctx.image_count);
-	for (auto& semaphore : ctx.rendering_complete) {
-		tif(FL, vkCreateSemaphore(ctx.device, &semaphoreInfo, nullptr, &semaphore));
-	}
+    tif(FL, vkCreateSemaphore(ctx.device, &semaphoreInfo, nullptr, &ctx.image_acquired));
+    ctx.rendering_complete.resize(ctx.image_count);
+    for (auto& semaphore : ctx.rendering_complete) {
+        tif(FL, vkCreateSemaphore(ctx.device, &semaphoreInfo, nullptr, &semaphore));
+    }
 }
 
 void cleanup_semaphores(Context& ctx)
 {
-	vkDestroySemaphore(ctx.device, ctx.image_acquired, nullptr);
-	for (auto& semaphore : ctx.rendering_complete) {
-		vkDestroySemaphore(ctx.device, semaphore, nullptr);
-	}
+    vkDestroySemaphore(ctx.device, ctx.image_acquired, nullptr);
+    for (auto& semaphore : ctx.rendering_complete) {
+        vkDestroySemaphore(ctx.device, semaphore, nullptr);
+    }
 }

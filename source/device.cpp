@@ -99,8 +99,8 @@ bool is_common_queue_found(Context& ctx, VkPhysicalDevice physical_device)
 bool is_device_good_enough(Context& ctx, VkPhysicalDevice physical_device)
 {
     return is_common_queue_found(ctx, physical_device)
-           && are_extensions_supported(physical_device)
-           && is_swap_chain_acceptable(ctx, physical_device);
+        && are_extensions_supported(physical_device)
+        && is_swap_chain_acceptable(ctx, physical_device);
 }
 
 void choose_gpu(Context& ctx)
