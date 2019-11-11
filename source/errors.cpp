@@ -1,6 +1,7 @@
 #include <vulkan/vulkan.h>
 
 #include <string>
+#include <stdexcept>
 
 #include "errors.h"
 

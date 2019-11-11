@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <stdexcept>
 
 #define FL __FILE__, __LINE__
 void tif(char * file_line, int line, VkResult result);
