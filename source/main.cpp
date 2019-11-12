@@ -23,13 +23,13 @@ int main()
 
     try
     {
-        init_window(ctx);
+        init_window_glfw(ctx);
         init_vulkan(ctx);
         create_graphics_pass(ctx, pass);
-        main_loop(ctx, pass);
+        main_loop_glfw(ctx, pass);
         destroy_graphics_pass(ctx, pass);
         cleanup_vulkan(ctx);
-        cleanup_window(ctx);
+        cleanup_window_glfw(ctx);
     }
     catch (const std::exception & e)
     {

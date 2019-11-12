@@ -8,14 +8,14 @@
 #include "errors.h"
 #include "draw_frame.h"
 
-void init_window(Context& ctx)
+void init_window_glfw(Context& ctx)
 {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     ctx.window = glfwCreateWindow(ctx.width, ctx.height, "Vulkan", nullptr, nullptr);
 }
 
-void cleanup_window(Context& ctx)
+void cleanup_window_glfw(Context& ctx)
 {
     glfwDestroyWindow(ctx.window);
     glfwTerminate();
@@ -37,7 +37,7 @@ std::vector<const char*> get_required_glfw_extensions(Context& ctx)
     return extensions;
 }
 
-void main_loop(Context& ctx, Graphics_Pass& pass)
+void main_loop_glfw(Context& ctx, Graphics_Pass& pass)
 {
     while (!glfwWindowShouldClose(ctx.window))
     {
