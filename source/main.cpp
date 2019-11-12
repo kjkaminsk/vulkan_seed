@@ -13,17 +13,6 @@
 #include "draw_frame.h"
 
 
-void main_loop(Context& ctx, Graphics_Pass& pass)
-{
-    while (!glfwWindowShouldClose(ctx.window))
-    {
-        glfwPollEvents();
-
-        draw_frame(ctx, pass);
-    }
-    vkDeviceWaitIdle(ctx.device);
-}
-
 int main()
 {
     Context ctx = {};

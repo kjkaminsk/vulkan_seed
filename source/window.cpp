@@ -4,7 +4,9 @@
 #include <vector>
 
 #include "context.h"
+#include "graphics_pass.h"
 #include "errors.h"
+#include "draw_frame.h"
 
 void init_window(Context& ctx)
 {
@@ -34,3 +36,15 @@ std::vector<const char*> get_required_glfw_extensions(Context& ctx)
 
     return extensions;
 }
+
+void main_loop(Context& ctx, Graphics_Pass& pass)
+{
+    while (!glfwWindowShouldClose(ctx.window))
+    {
+        glfwPollEvents();
+
+        draw_frame(ctx, pass);
+    }
+    vkDeviceWaitIdle(ctx.device);
+}
+

@@ -1,5 +1,11 @@
 # pragma once
 
+#include <vulkan/vulkan.h>
+
+#include <vector>
+
+#include "context.h"
+
 typedef struct Graphics_Pass_ {
     VkPipelineLayout p_layout;
     VkShaderModule vert;
