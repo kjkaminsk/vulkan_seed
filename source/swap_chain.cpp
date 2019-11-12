@@ -73,17 +73,19 @@ VkExtent2D choose_swap_extent(Context& ctx, const VkSurfaceCapabilitiesKHR& capa
     }
     else {
         // initially ctx.width, ctx.height would be OK
-        // VkExtent2D actualExtent = { ctx.width, ctx.height };
+        VkExtent2D actualExtent = { ctx.width, ctx.height };
+
         // but after resizing the window, we don't know the actual extent resolution
-        int width, height;
-        glfwGetFramebufferSize(ctx.window, &width, &height);
-        VkExtent2D actualExtent = { (uint32_t)width, (uint32_t)height };
+        //{
+        //    int width, height;
+        //    //glfwGetFramebufferSize(ctx.window, &width, &height);
+        //    VkExtent2D actualExtent = { (uint32_t)width, (uint32_t)height };
 
-        actualExtent.width = std::max(capabilities.minImageExtent.width,
-                                      std::min(capabilities.maxImageExtent.width, actualExtent.width));
-        actualExtent.height = std::max(capabilities.minImageExtent.height,
-                                       std::min(capabilities.maxImageExtent.height, actualExtent.height));
-
+        //    actualExtent.width = std::max(capabilities.minImageExtent.width,
+        //                                  std::min(capabilities.maxImageExtent.width, actualExtent.width));
+        //    actualExtent.height = std::max(capabilities.minImageExtent.height,
+        //                                   std::min(capabilities.maxImageExtent.height, actualExtent.height));
+        //}
         return actualExtent;
     }
 }

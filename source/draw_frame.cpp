@@ -11,8 +11,8 @@ void recreate_swap_chain(Context& ctx, Graphics_Pass& pass)
     // handle minimize
     int width = 0, height = 0;
     while (width == 0 || height == 0) {
-        glfwGetFramebufferSize(ctx.window, &width, &height);
-        glfwWaitEvents();
+        //glfwGetFramebufferSize(ctx.window, &width, &height);
+        //glfwWaitEvents();
     }
 
     vkDeviceWaitIdle(ctx.device);

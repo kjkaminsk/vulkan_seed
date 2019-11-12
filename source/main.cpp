@@ -1,5 +1,5 @@
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
+//#define GLFW_INCLUDE_VULKAN
+//#include <GLFW/glfw3.h>
 
 #include <iostream>
 #include <stdexcept>
@@ -8,7 +8,10 @@
 
 #include "context.h"
 #include "errors.h"
-#include "window.h"
+
+//#include "window.h"
+#include "window_manual.h"
+
 #include "graphics_pass.h"
 #include "draw_frame.h"
 
@@ -23,13 +26,20 @@ int main()
 
     try
     {
-        init_window_glfw(ctx);
+        //create_window_glfw(ctx);
+        create_window_manual(ctx);
+
         init_vulkan(ctx);
         create_graphics_pass(ctx, pass);
-        main_loop_glfw(ctx, pass);
+
+        //main_loop_glfw(ctx, pass);
+        main_loop_manual(ctx, pass);
+
         destroy_graphics_pass(ctx, pass);
         cleanup_vulkan(ctx);
-        cleanup_window_glfw(ctx);
+
+        //cleanup_window_glfw(ctx);
+        cleanup_window_manual(ctx);
     }
     catch (const std::exception & e)
     {

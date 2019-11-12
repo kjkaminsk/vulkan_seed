@@ -7,11 +7,13 @@
 #include "errors.h"
 #include "vulkan_instance.h"
 #include "validation_layers.h"
-#include "window.h"
+//#include "window.h"
 
 std::vector<const char*> get_required_extensions(Context& ctx)
 {
-    auto extensions = get_required_glfw_extensions(ctx);
+    //auto extensions = get_required_glfw_extensions(ctx);
+
+    std::vector<const char*> extensions;
 
     if (ctx.enable_validation_layers) {
         extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
