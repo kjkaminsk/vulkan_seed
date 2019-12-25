@@ -5,22 +5,37 @@
 #include "errors.h"
 #include "draw_frame.h"
 
-static LRESULT CALLBACK window_message_callback(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+void handle_window_messages(Context* ctx, HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+    static Context* context = nullptr;
+    if (ctx)
+    {
+        context = ctx;
+        return;
+    }
+
     switch (msg)
     {
     case WM_CLOSE:
         DestroyWindow(hwnd);
-        return 0;
+        break;
     case WM_DESTROY:
         PostQuitMessage(0);
-        return 0;
+        break;
     case WM_KEYDOWN:
-        if (wParam == VK_ESCAPE) PostQuitMessage(0);
-        return 0;
-    default:
-        return DefWindowProc(hwnd, msg, wParam, lParam);
+        if (wParam == VK_ESCAPE)
+        {
+            PostQuitMessage(0);
+        }
+        break;
     }
+}
+
+static LRESULT CALLBACK wnd_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    handle_window_messages(nullptr, hwnd, msg, wParam, lParam);
+
+    return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
 void create_window_manual(Context& ctx)
@@ -29,9 +44,12 @@ void create_window_manual(Context& ctx)
 
     const CHAR* window_class_name = title.c_str();
 
+    // initialize context pointer in the handler
+    handle_window_messages(&ctx, 0, 0, 0, 0);
+
     // Register the window class
     WNDCLASS window_class = {};
-    window_class.lpfnWndProc = window_message_callback;
+    window_class.lpfnWndProc = wnd_proc;
     window_class.hInstance = GetModuleHandle(nullptr);
     window_class.lpszClassName = window_class_name;
 
