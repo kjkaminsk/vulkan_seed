@@ -8,9 +8,7 @@ void create_surface(Context& ctx) {
     createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
     createInfo.hwnd = ctx.window_manual;
     createInfo.hinstance = GetModuleHandle(nullptr);
-    if (vkCreateWin32SurfaceKHR(ctx.instance, &createInfo, nullptr, &ctx.surface) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create window surface!");
-    }
+    tif(FL, vkCreateWin32SurfaceKHR(ctx.instance, &createInfo, nullptr, &ctx.surface));
 
     //tif(FL, glfwCreateWindowSurface(ctx.instance, ctx.window, nullptr, &ctx.surface));
     //create_surface_by_glfw(ctx);
