@@ -4,13 +4,20 @@
 #include "graphics_pass.h"
 #include "errors.h"
 #include "draw_frame.h"
+#include "swap_chain.h"
 
-void handle_window_messages(Context* ctx, HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+void handle_window_messages(Context* ctx, Graphics_Pass* pass, HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     static Context* context = nullptr;
+    static Graphics_Pass* render_pass = nullptr;
     if (ctx)
     {
         context = ctx;
+        return;
+    }
+    if (pass)
+    {
+        render_pass = pass;
         return;
     }
 
@@ -21,6 +28,26 @@ void handle_window_messages(Context* ctx, HWND hwnd, UINT msg, WPARAM wParam, LP
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
+        break;
+    case WM_PAINT:
+        ValidateRect(context->window_manual, NULL);
+        break;
+    case WM_SIZE:
+        if (context->ready && wParam != SIZE_MINIMIZED)
+        {
+            if (context->resizing || wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED)
+            {
+                context->width = LOWORD(lParam);
+                context->height = HIWORD(lParam);
+                recreate_swap_chain(*context, *render_pass);
+            }
+        }
+        break;
+    case WM_ENTERSIZEMOVE:
+        context->resizing = true;
+        break;
+    case WM_EXITSIZEMOVE:
+        context->resizing = false;
         break;
     case WM_KEYDOWN:
         if (wParam == VK_ESCAPE)
@@ -33,7 +60,7 @@ void handle_window_messages(Context* ctx, HWND hwnd, UINT msg, WPARAM wParam, LP
 
 static LRESULT CALLBACK wnd_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    handle_window_messages(nullptr, hwnd, msg, wParam, lParam);
+    handle_window_messages(nullptr, nullptr, hwnd, msg, wParam, lParam);
 
     return DefWindowProc(hwnd, msg, wParam, lParam);
 }
@@ -44,8 +71,8 @@ void create_window_manual(Context& ctx)
 
     const CHAR* window_class_name = title.c_str();
 
-    // initialize context pointer in the handler
-    handle_window_messages(&ctx, 0, 0, 0, 0);
+    // initialize a context pointer in the handler
+    handle_window_messages(&ctx, nullptr, 0, 0, 0, 0);
 
     // Register the window class
     WNDCLASS window_class = {};
@@ -85,6 +112,10 @@ void cleanup_window_manual(Context& ctx)
 
 void main_loop_manual(Context& ctx, Graphics_Pass& pass)
 {
+    ctx.ready = true;
+    // initialize a render pass pointer in the handler
+    handle_window_messages(nullptr, &pass, 0, 0, 0, 0);
+
     MSG msg;
     while (1)
     {

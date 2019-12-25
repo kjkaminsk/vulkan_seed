@@ -9,11 +9,17 @@
 void recreate_swap_chain(Context& ctx, Graphics_Pass& pass)
 {
     // handle minimize
-    int width = 0, height = 0;
-    while (width == 0 || height == 0) {
+    //int width = 0, height = 0;
+    //while (width == 0 || height == 0) {
         //glfwGetFramebufferSize(ctx.window, &width, &height);
         //glfwWaitEvents();
+    //}
+
+    if (!ctx.ready)
+    {
+        return;
     }
+    ctx.ready = false;
 
     vkDeviceWaitIdle(ctx.device);
 
@@ -21,6 +27,8 @@ void recreate_swap_chain(Context& ctx, Graphics_Pass& pass)
     cleanup_swap_chain(ctx);
     create_swap_chain(ctx);
     create_graphics_pass(ctx, pass);
+
+    ctx.ready = true;
 }
 
 void acquire_next_image(Context& ctx, Graphics_Pass& pass, uint32_t* image_index)

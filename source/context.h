@@ -10,8 +10,10 @@
 
 typedef struct Context_
 {
+    bool ready;
     uint32_t width;
     uint32_t height;
+    bool resizing;
 
     HWND window_manual;
     //GLFWwindow* window;

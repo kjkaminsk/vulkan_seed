@@ -1,0 +1,2 @@
+Fix minimalize action
+  swap chain shouldn't be recreated on changing width to 0, but only on restoring size
