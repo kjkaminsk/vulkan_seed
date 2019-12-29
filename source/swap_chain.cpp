@@ -119,7 +119,7 @@ void cleanup_swap_chain(Context& ctx)
     for (auto imageView : ctx.swapChainImageViews) {
         vkDestroyImageView(ctx.device, imageView, nullptr);
     }
-    // images will be destroyed by swap chain automatically
+    // images will be destroyed by swap chain destruction automatically
     vkDestroySwapchainKHR(ctx.device, ctx.swap_chain, nullptr);
 }
 

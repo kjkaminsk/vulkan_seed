@@ -35,11 +35,13 @@ void acquire_next_image(Context& ctx, Graphics_Pass& pass, uint32_t* image_index
 {
     VkResult result = vkAcquireNextImageKHR(ctx.device, ctx.swap_chain, UINT64_MAX,
                                             ctx.image_acquired, nullptr, image_index);
-    if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
-        recreate_swap_chain(ctx, pass);
-        result = vkAcquireNextImageKHR(ctx.device, ctx.swap_chain, UINT64_MAX,
-                                                ctx.image_acquired, nullptr, image_index);
-    }
+    // don't need to support swap chain recreation here as resize, minimize and restore is handled by window message handler
+    //   and IsIconic() check before entering draw_frame()
+    //if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
+    //    recreate_swap_chain(ctx, pass);
+    //    result = vkAcquireNextImageKHR(ctx.device, ctx.swap_chain, UINT64_MAX,
+    //                                            ctx.image_acquired, nullptr, image_index);
+    //}
     tif(FL, result);
 }
 

@@ -117,16 +117,23 @@ void main_loop_manual(Context& ctx, Graphics_Pass& pass)
     handle_window_messages(nullptr, &pass, 0, 0, 0, 0);
 
     MSG msg;
-    while (1)
+    while (true)
     {
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
-            if (msg.message == WM_QUIT) break;
+            if (msg.message == WM_QUIT)
+            {
+                break;
+            }
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
 
-        draw_frame(ctx, pass);
+        // do not try to handle swap chain recration when the extent is (0,0)
+        if (!IsIconic(ctx.window_manual))
+        {
+            draw_frame(ctx, pass);
+        }
     }
     vkDeviceWaitIdle(ctx.device);
 }
