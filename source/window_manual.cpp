@@ -33,21 +33,15 @@ void handle_window_messages(Context* ctx, Graphics_Pass* pass, HWND hwnd, UINT m
         ValidateRect(context->window_manual, NULL);
         break;
     case WM_SIZE:
-        if (context->ready && wParam != SIZE_MINIMIZED)
+        if (context->ready)
         {
-            if (context->resizing || wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED)
+            if (wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED)
             {
                 context->width = LOWORD(lParam);
                 context->height = HIWORD(lParam);
                 recreate_swap_chain(*context, *render_pass);
             }
         }
-        break;
-    case WM_ENTERSIZEMOVE:
-        context->resizing = true;
-        break;
-    case WM_EXITSIZEMOVE:
-        context->resizing = false;
         break;
     case WM_KEYDOWN:
         if (wParam == VK_ESCAPE)
